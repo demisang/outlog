@@ -1,0 +1,2 @@
+# outlog
+Outer logging system
