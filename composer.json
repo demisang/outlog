@@ -1,0 +1,28 @@
+{
+    "name": "demi/outlog",
+    "description": "Outer logging system",
+    "keywords": ["log", "errors", "exception"],
+    "homepage": "https://github.com/demisang/outlog#readme",
+    "type": "extension",
+    "license": "GNU",
+    "authors": [
+        {
+            "name": "Ivan Orlov",
+            "email": "orlov_mail@mail.ru",
+            "homepage": "https://orlov.io/",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/demisang/outlog/issues",
+        "source": "https://github.com/demisang/outlog"
+    },
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "demi\\outlog\\": ""
+        }
+    }
+}
