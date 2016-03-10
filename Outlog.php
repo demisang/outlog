@@ -28,16 +28,16 @@ class Outlog
 
     }
 
-    public static function logException(\Exception $exception)
+    public static function logException(\Exception $exception, $type = self::TYPE_INFO)
     {
-        $provider = new ExceptionProvider($exception);
+        $provider = new ExceptionProvider($exception, $type);
 
         return static::submit($provider);
     }
 
     protected static function submit(ExceptionProvider $exceptionProvider)
     {
-
+        \demi\helpers\VD::dump($exceptionProvider->getData());
 
         return true;
     }

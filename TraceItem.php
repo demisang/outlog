@@ -8,8 +8,9 @@ class TraceItem
     public $line;
     public $function;
     public $class;
-    public $args;
+    public $args = [];
     public $contextLines = 3;
+    public $contextErrorLine;
 
     public function __construct($file, $line, $function, $class = null, $args = array())
     {
@@ -17,7 +18,12 @@ class TraceItem
         $this->line = $line;
         $this->function = $function;
         $this->class = $class;
-        $this->args = $args;
+
+        if (is_array($args)) {
+            foreach ($args as $arg) {
+                $this->args[] = gettype($arg);
+            }
+        }
     }
 
     /**
@@ -40,6 +46,7 @@ class TraceItem
         if ($startLine < 1) {
             $startLine = 1;
         }
+        $this->contextErrorLine = $this->line - $startLine + 1;
         $endLine = $this->line + $this->contextLines;
 
         $lines = array();
@@ -57,5 +64,18 @@ class TraceItem
         }
 
         return implode(PHP_EOL, $lines);
+    }
+
+    public function getData()
+    {
+        return array(
+            'file' => $this->file,
+            'line' => $this->line,
+            'function' => $this->function,
+            'class' => $this->class,
+            'args' => $this->args,
+            'context' => $this->getFileContext(),
+            'context_error_line' => $this->contextErrorLine,
+        );
     }
 }
