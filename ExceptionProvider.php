@@ -50,6 +50,7 @@ class ExceptionProvider
             'url' => $this->_url,
             'hash' => $this->generateHash(),
             'trace' => array(),
+            'time' => time(),
         ];
 
         foreach ($this->_trace as $traceItem) {
@@ -80,6 +81,6 @@ class ExceptionProvider
             }
         }
 
-        return md5($this->exception->getFile() . $this->exception->getLine() . $veryLastTime);
+        return md5($this->_title . $this->_message . $this->_url);
     }
 }

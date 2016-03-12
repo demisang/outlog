@@ -35,10 +35,28 @@ class Outlog
         return static::submit($provider);
     }
 
+    /**
+     * Store error on the Outlog API
+     *
+     * @param \demi\outlog\ExceptionProvider $exceptionProvider
+     *
+     * @return bool
+     */
     protected static function submit(ExceptionProvider $exceptionProvider)
     {
         \demi\helpers\VD::dump($exceptionProvider->getData());
 
-        return true;
+        $handle = curl_init('http://outlog.loc/log/submit');
+        // curl_setopt($handle, CURLOPT_HTTPHEADER, []);
+        curl_setopt($handle, CURLOPT_TIMEOUT, 20);
+        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($handle, CURLOPT_POST, true);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, [
+            'project_token' => 'PkXE8cqe5BuI0Odd05MKy_0EOM_nJeqF',
+            'data' => json_encode($exceptionProvider->getData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        ]);
+
+        return curl_exec($handle) !== false;
     }
 }
