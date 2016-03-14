@@ -12,8 +12,11 @@ class TraceItem
     public $contextLines = 3;
     public $contextErrorLine;
 
-    public function __construct($file, $line, $function, $class = null, $args = array())
+    public $basePath = '';
+
+    public function __construct($file, $line, $function, $class = null, $args = array(), $basePath = '')
     {
+        $this->basePath = str_replace('\\', '/', $basePath);
         $this->file = $file;
         $this->line = $line;
         $this->function = $function;
@@ -66,10 +69,24 @@ class TraceItem
         return implode(PHP_EOL, $lines);
     }
 
+    /**
+     * Prepate file path for submit
+     *
+     * @param string $originalFilePath
+     *
+     * @return string
+     */
+    protected function prepareFilePath($originalFilePath)
+    {
+        $originalFilePath = str_replace('\\', '/', $originalFilePath);
+
+        return ltrim(str_replace($this->basePath, '', $originalFilePath), '/');
+    }
+
     public function getData()
     {
         return array(
-            'file' => $this->file,
+            'file' => $this->prepareFilePath($this->file),
             'line' => $this->line,
             'function' => $this->function,
             'class' => $this->class,

@@ -8,6 +8,7 @@ class ExceptionProvider
      * @var \Exception
      */
     public $exception;
+    public $basePath = '';
     private $_type;
     private $_title;
     private $_url;
@@ -17,8 +18,9 @@ class ExceptionProvider
      */
     private $_trace = [];
 
-    public function __construct(\Exception $exception, $type = Outlog::TYPE_INFO)
+    public function __construct(\Exception $exception, $type = Outlog::TYPE_INFO, $basePath = '')
     {
+        $this->basePath = str_replace('\\', '/', $basePath);
         $this->exception = $exception;
 
         $this->_type = $type;
@@ -27,7 +29,7 @@ class ExceptionProvider
         if (!empty($_SERVER['REQUEST_URI'])) {
             $this->_url = $_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'];
         } else {
-            $this->_url = $this->exception->getFile() . ':' . $this->exception->getLine();
+            $this->_url = $this->prepareFilePath($this->exception->getFile()) . ':' . $this->exception->getLine();
         }
 
         foreach ($exception->getTrace() as $trace) {
@@ -37,7 +39,7 @@ class ExceptionProvider
             $class = isset($trace['class']) ? $trace['class'] : null;
             $args = isset($trace['args']) ? $trace['args'] : [];
 
-            $this->_trace[] = new TraceItem($file, $line, $function, $class, $args);
+            $this->_trace[] = new TraceItem($file, $line, $function, $class, $args, $this->basePath);
         }
     }
 
@@ -49,8 +51,10 @@ class ExceptionProvider
             'message' => $this->_message,
             'url' => $this->_url,
             'hash' => $this->generateHash(),
-            'trace' => array(),
+            'user_id' => null,
+            'user_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
             'time' => time(),
+            'trace' => array(),
         ];
 
         foreach ($this->_trace as $traceItem) {
@@ -58,6 +62,20 @@ class ExceptionProvider
         }
 
         return $result;
+    }
+
+    /**
+     * Prepate file path for submit
+     *
+     * @param string $originalFilePath
+     *
+     * @return string
+     */
+    protected function prepareFilePath($originalFilePath)
+    {
+        $originalFilePath = str_replace('\\', '/', $originalFilePath);
+
+        return ltrim(str_replace($this->basePath, '', $originalFilePath), '/');
     }
 
     /**

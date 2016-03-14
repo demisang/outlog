@@ -7,30 +7,32 @@ class Outlog
     const TYPE_ERROR = 'error';
     const TYPE_WARNING = 'warning';
     const TYPE_INFO = 'info';
+    public $token;
+    public $basePath;
 
-    public static function error()
+    public function error()
     {
 
     }
 
-    public static function warning()
+    public function warning()
     {
 
     }
 
-    public static function info()
+    public function info()
     {
 
     }
 
-    public static function log($message = '', $type = self::TYPE_INFO)
+    public function log($message = '', $type = self::TYPE_INFO)
     {
 
     }
 
-    public static function logException(\Exception $exception, $type = self::TYPE_INFO)
+    public function logException(\Exception $exception, $type = self::TYPE_INFO)
     {
-        $provider = new ExceptionProvider($exception, $type);
+        $provider = new ExceptionProvider($exception, $type, $this->basePath);
 
         return static::submit($provider);
     }
@@ -42,7 +44,7 @@ class Outlog
      *
      * @return bool
      */
-    protected static function submit(ExceptionProvider $exceptionProvider)
+    protected function submit(ExceptionProvider $exceptionProvider)
     {
         \demi\helpers\VD::dump($exceptionProvider->getData());
 
@@ -53,7 +55,7 @@ class Outlog
         curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, [
-            'project_token' => 'PkXE8cqe5BuI0Odd05MKy_0EOM_nJeqF',
+            'project_token' => $this->token,
             'data' => json_encode($exceptionProvider->getData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ]);
 

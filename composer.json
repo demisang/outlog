@@ -3,7 +3,7 @@
     "description": "Outer logging system",
     "keywords": ["log", "errors", "exception"],
     "homepage": "https://github.com/demisang/outlog#readme",
-    "type": "extension",
+    "type": "library",
     "license": "GNU",
     "authors": [
         {
