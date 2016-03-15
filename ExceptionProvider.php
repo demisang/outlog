@@ -16,7 +16,7 @@ class ExceptionProvider
     /**
      * @var TraceItem[]
      */
-    private $_trace = [];
+    private $_trace = array();
 
     public function __construct(\Exception $exception, $type = Outlog::TYPE_INFO, $basePath = '')
     {
@@ -37,7 +37,7 @@ class ExceptionProvider
             $line = isset($trace['line']) ? $trace['line'] : $exception->getLine();
             $function = isset($trace['function']) ? $trace['function'] : null;
             $class = isset($trace['class']) ? $trace['class'] : null;
-            $args = isset($trace['args']) ? $trace['args'] : [];
+            $args = isset($trace['args']) ? $trace['args'] : array();
 
             $this->_trace[] = new TraceItem($file, $line, $function, $class, $args, $this->basePath);
         }
@@ -45,7 +45,7 @@ class ExceptionProvider
 
     public function getData()
     {
-        $result = [
+        $result = array(
             'type' => $this->_type,
             'title' => $this->_title,
             'message' => $this->_message,
@@ -55,7 +55,7 @@ class ExceptionProvider
             'user_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
             'time' => time(),
             'trace' => array(),
-        ];
+        );
 
         foreach ($this->_trace as $traceItem) {
             $result['trace'][] = $traceItem->getData();
@@ -85,7 +85,7 @@ class ExceptionProvider
      */
     protected function generateHash()
     {
-        $filesList = [];
+        $filesList = array();
         foreach ($this->_trace as $traceItem) {
             $filesList[] = $traceItem->file;
         }

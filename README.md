@@ -27,3 +27,10 @@ php composer.phar update
 # Configurations
 ---
 
+Log new exception
+```php
+$client = new Outlog($apiKey);
+$client->basePath = '/var/www/site';
+
+$client->notifyException($exception);
+```

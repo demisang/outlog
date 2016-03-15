@@ -8,7 +8,7 @@ class TraceItem
     public $line;
     public $function;
     public $class;
-    public $args = [];
+    public $args = array();
     public $contextLines = 3;
     public $contextErrorLine;
 
